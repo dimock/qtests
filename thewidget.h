@@ -20,6 +20,9 @@ public:
 
 private:
 
+  QSize sizeHint() const;
+  QSize minimumSize() const;
+
   typedef QVector<QPolygon> PolygonesArray;
 
   PolygonesArray polygones_;

@@ -4,6 +4,7 @@
 
 class QMouseEvent;
 class QVBoxLayout;
+class QResizeEvent;
 
 class QFoldingContainer : public QWidget
 {

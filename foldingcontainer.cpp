@@ -12,7 +12,7 @@ QFoldingContainer::QFoldingContainer(QWidget * parent /* = 0*/) :
   QLabel * theLabel = new QLabel(tr("Test Widget"), this);
 
   captionLayout_ = new QVBoxLayout;
-  captionLayout_->addWidget(theLabel);
+  captionLayout_->addWidget(theLabel, 0, Qt::AlignLeft);
 
   // create main layout for both content and caption
   mainLayout_ = new QVBoxLayout;
@@ -20,6 +20,7 @@ QFoldingContainer::QFoldingContainer(QWidget * parent /* = 0*/) :
   
   setLayout(mainLayout_);
   
+  setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
   adjustSize();
 }
 
@@ -59,8 +60,9 @@ void QFoldingContainer::setContent(QWidget * content)
   contentWidget_ = content;
   contentWidget_->setParent(this);
   mainLayout_->addLayout(contentLayout_);
-  contentLayout_->addWidget(contentWidget_);
+  contentLayout_->addWidget(contentWidget_, 1);
 
+  setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
   adjustSize();
 }
 

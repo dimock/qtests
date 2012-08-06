@@ -1,10 +1,12 @@
 #include "thewidget.h"
 #include <QPainter>
 #include <QMouseEvent>
+#include <QApplication>
 
 TheWidget::TheWidget(QWidget * parent) :
 QWidget(parent)
 {
+  setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
   setAttribute(Qt::WA_DeleteOnClose);
 }
 
@@ -24,9 +26,10 @@ void TheWidget::mouseMoveEvent(QMouseEvent * e)
       polygones_.push_back(QPolygon());
     polygones_.back().push_back(p);
     pos_ = p;
-  }
 
-  update();
+    update();
+    updateGeometry();
+  }
 }
 
 void TheWidget::mousePressEvent(QMouseEvent * e)
@@ -58,4 +61,24 @@ void TheWidget::paintEvent(QPaintEvent * e)
   {
     painter.drawPolygon(*i);
   }
+}
+
+QSize TheWidget::sizeHint() const
+{
+  QRect rcAll;
+  for (PolygonesArray::const_iterator i = polygones_.begin(); i != polygones_.end(); ++i)
+  {
+    const QPolygon & pg = *i;
+    QRect rc = pg.boundingRect();
+    if ( rcAll.isEmpty() )
+      rcAll = rc;
+    else
+      rcAll |= rc;
+  }
+  return QSize( rcAll.right()+1, rcAll.bottom()+1 );
+}
+
+QSize TheWidget::minimumSize() const
+{
+  return sizeHint();
 }
