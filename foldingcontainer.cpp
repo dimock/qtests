@@ -3,10 +3,14 @@
 #include <QLabel>
 #include <QApplication>
 #include <QPushButton>
+#include <QPainter>
+#include <QGraphicsScene>
+#include <QGraphicsProxyWidget>
 
 QFoldingContainer::QFoldingContainer(QWidget * parent /* = 0*/) :
-  QWidget(parent), contentWidget_(0), contentPanel_(0), captionLayout_(0),
-  contentPanelLayout_(0), contentWidgetLayout_(0), height_(20), collapsed_(false)
+  QWidget(parent), contentWidget_(0), captionLayout_(0),
+  widgetLayout_(0), pixmapLayout_(0), pixmapWidget_(0), height_(20), collapsed_(false),
+  contentPixmap_(0)
 {
   setAttribute(Qt::WA_DeleteOnClose);
 
@@ -29,7 +33,7 @@ QFoldingContainer::QFoldingContainer(QWidget * parent /* = 0*/) :
   
   setLayout(mainLayout_);
   
-  setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+  //setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
   adjustSize();
 }
 
@@ -40,28 +44,30 @@ QFoldingContainer::~QFoldingContainer()
 
 void QFoldingContainer::killContent()
 {
-  if ( contentWidget_ && contentPanelLayout_ )
+  if ( contentWidget_ )
   {
-    mainLayout_->removeItem(contentPanelLayout_);
-    contentPanelLayout_->removeWidget(contentPanel_);
-
-    delete contentPanelLayout_;
-    delete contentPanel_;
+    delete widgetLayout_;
+    delete pixmapLayout_;
+    delete contentWidget_;
+    delete pixmapWidget_;
   }
 
+  widgetLayout_ = 0;
+  pixmapLayout_ = 0;
   contentWidget_ = 0;
-  contentPanelLayout_ = 0;
-  contentWidgetLayout_ = 0;
-  contentPanel_ = 0;
+  pixmapWidget_ = 0;
 }
 
 void QFoldingContainer::paintEvent(QPaintEvent * e)
 {
-  if ( !contentPanel_ || !contentWidget_ )
+  if ( !contentPixmap_ )
     return;
 
-  //QSize sz = contentPanel_->size();
-  //contentPanel_->resize(sz.width(), collapsed_ ? height_ : sz.height());
+  QImage image = contentPixmap_->toImage();
+  pixmapWidget_->resize(contentWidget_->size());
+  QPainter painter(pixmapWidget_);
+
+  painter.drawImage(0, 0, image);
 }
 
 void QFoldingContainer::enableAnimation(bool enable)
@@ -76,47 +82,34 @@ void QFoldingContainer::setContent(QWidget * content)
 {
   killContent();
 
+  if ( !content )
+    return;
+
   // store content widget
   contentWidget_ = content;
 
-  /** firstly create additional panel for content widget
+  /** firstly create layout for widget
    */
 
   // create layout for content panel
-  contentPanelLayout_ = new QVBoxLayout;
-
-  // add content panel layout to main layout
-  mainLayout_->addLayout(contentPanelLayout_);
-  contentPanelLayout_->setContentsMargins( QMargins(0,0,0,0) );
+  widgetLayout_ = new QVBoxLayout;
+  mainLayout_->addLayout(widgetLayout_);
+  widgetLayout_->setContentsMargins(0,0,0,0);
+  widgetLayout_->addWidget(contentWidget_, 1);
   
-  // create panel for content widget
-  contentPanel_ = new QWidget(this);
-
-  // add content panel to its layout
-  contentPanelLayout_->addWidget(contentPanel_, 1);
-  contentPanelLayout_->setAlignment( Qt::AlignBottom | Qt::AlignHCenter );
-
-
-  /** then create layout inside the content panel and insert content widget into it
-   */
-
-  // create layout for content widget (inside the content panel)
-  contentWidgetLayout_ = new QVBoxLayout;
-
-  // add layout for content widget
-  contentPanel_->setLayout(contentWidgetLayout_);
-
-  contentWidgetLayout_->setContentsMargins( QMargins(0,0,0,0) );
-  //contentWidgetLayout_->setAlignment( Qt::AlignBottom | Qt::AlignHCenter );
-
-  // add content widget to its layout
-  contentWidgetLayout_->addWidget(contentWidget_, 0 );
+  // create widget for pixmap content representation
+  pixmapLayout_ = new QVBoxLayout;
+  pixmapLayout_->setContentsMargins(0,0,0,0);
+  pixmapWidget_ = new QWidget(this);
+  mainLayout_->addLayout(pixmapLayout_);
+  pixmapLayout_->addWidget(pixmapWidget_, 1);
 
   // set content panel as content widget parent
-  contentWidget_->setParent(contentPanel_);
+  contentWidget_->setParent(this);
 
+  updateContent();
 
-  setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+  //setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
   adjustSize();
 }
 
@@ -124,16 +117,54 @@ void QFoldingContainer::collapse()
 {
   collapsed_ = true;
   collapseButton_->setText(tr("+"));
-  update();
-  updateGeometry();
+  updateContent();
 }
 
 void QFoldingContainer::expand()
 {
   collapsed_ = false;
   collapseButton_->setText(tr("-"));
+  updateContent();
+}
+
+void QFoldingContainer::updateContent()
+{
+  if ( !contentWidget_ )
+    return;
+
+  pixmapWidget_->setVisible(collapsed_);
+  contentWidget_->setVisible(!collapsed_);
+
+  if ( collapsed_ )
+  {
+    QSize sz = contentWidget_->size();
+    contentPixmap_ = new QPixmap(sz);
+    
+    QPainter painter(contentPixmap_);
+    painter.fillRect(0, 0, sz.width(), sz.height(), Qt::black);
+
+    QGraphicsScene * scene = new QGraphicsScene();
+    //contentWidget_->setParent(0);
+    QGraphicsProxyWidget * widget = scene->addWidget(contentWidget_);
+    contentWidget_->repaint();
+    contentWidget_->show();
+    scene->render(&painter, QRectF(), QRect(), Qt::IgnoreAspectRatio);
+    scene->removeItem(widget);
+    widget->setWidget(0);
+    contentWidget_->hide();
+    pixmapWidget_->show();
+    delete widget;
+    delete scene;
+  }
+  else
+  {
+    contentWidget_->setParent(this);
+    delete contentPixmap_;
+    contentPixmap_ = 0;
+  }
+
   update();
-  updateGeometry();
+//  updateGeometry();
 }
 
 void QFoldingContainer::onCollapsed(bool collapsed)
@@ -142,22 +173,4 @@ void QFoldingContainer::onCollapsed(bool collapsed)
     collapse();
   else
     expand();
-}
-
-QSize QFoldingContainer::sizeHint() const
-{
-  int sx = captionLayout_->sizeHint().width();
-  if ( contentPanelLayout_ && sx < contentPanelLayout_->sizeHint().width() )
-    sx = contentPanelLayout_->sizeHint().width();
-
-  int sy = captionLayout_->sizeHint().height();
-  if ( contentPanelLayout_ )
-  {
-    if ( collapsed_ )
-      sy += 20;
-    else
-      sy += contentPanelLayout_->sizeHint().height();
-  }
-
-  return QSize(sx, sy);
 }

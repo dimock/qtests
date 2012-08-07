@@ -32,16 +32,16 @@ public slots:
 private:
 
   void killContent();
-
-  QSize sizeHint() const;
+  void updateContent();
 
 private:
 
-  QVBoxLayout * mainLayout_, * captionLayout_, * contentPanelLayout_, * contentWidgetLayout_;
+  QVBoxLayout * mainLayout_, * captionLayout_, * widgetLayout_, * pixmapLayout_;
   QWidget * contentWidget_;
-  QWidget * contentPanel_;
+  QWidget * pixmapWidget_;
   QPushButton * collapseButton_;
 
   int height_;
   bool collapsed_;
+  QPixmap * contentPixmap_;
 };
