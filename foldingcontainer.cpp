@@ -1,4 +1,5 @@
 #include "foldingcontainer.h"
+#include "pixmapwidget.h"
 #include <QLayout>
 #include <QLabel>
 #include <QApplication>
@@ -56,18 +57,7 @@ void QFoldingContainer::killContent()
   pixmapLayout_ = 0;
   contentWidget_ = 0;
   pixmapWidget_ = 0;
-}
-
-void QFoldingContainer::paintEvent(QPaintEvent * e)
-{
-  if ( !contentPixmap_ )
-    return;
-
-  QImage image = contentPixmap_->toImage();
-  pixmapWidget_->resize(contentWidget_->size());
-  QPainter painter(pixmapWidget_);
-
-  painter.drawImage(0, 0, image);
+  contentPixmap_ = 0;
 }
 
 void QFoldingContainer::enableAnimation(bool enable)
@@ -100,7 +90,7 @@ void QFoldingContainer::setContent(QWidget * content)
   // create widget for pixmap content representation
   pixmapLayout_ = new QVBoxLayout;
   pixmapLayout_->setContentsMargins(0,0,0,0);
-  pixmapWidget_ = new QWidget(this);
+  pixmapWidget_ = new PixmapWidget(this);
   mainLayout_->addLayout(pixmapLayout_);
   pixmapLayout_->addWidget(pixmapWidget_, 1);
 
@@ -139,28 +129,32 @@ void QFoldingContainer::updateContent()
   {
     QSize sz = contentWidget_->size();
     contentPixmap_ = new QPixmap(sz);
-    
-    QPainter painter(contentPixmap_);
-    painter.fillRect(0, 0, sz.width(), sz.height(), Qt::black);
-
-    QGraphicsScene * scene = new QGraphicsScene();
-    //contentWidget_->setParent(0);
-    QGraphicsProxyWidget * widget = scene->addWidget(contentWidget_);
-    contentWidget_->repaint();
     contentWidget_->show();
-    scene->render(&painter, QRectF(), QRect(), Qt::IgnoreAspectRatio);
-    scene->removeItem(widget);
-    widget->setWidget(0);
+    contentPixmap_->grabWidget(contentWidget_);
     contentWidget_->hide();
-    pixmapWidget_->show();
-    delete widget;
-    delete scene;
+    //QPainter painter(contentPixmap_);
+    //painter.fillRect(0, 0, sz.width(), sz.height(), Qt::black);
+
+    //QGraphicsScene * scene = new QGraphicsScene();
+    ////contentWidget_->setParent(0);
+    //QGraphicsProxyWidget * widget = scene->addWidget(contentWidget_);
+    //contentWidget_->repaint();
+    //contentWidget_->show();
+    //scene->render(&painter, QRectF(0, 0, sz.width(), sz.height()), QRect(0, 0, sz.width(), sz.height()), Qt::KeepAspectRatio);
+    //scene->removeItem(widget);
+    //widget->setWidget(0);
+    //contentWidget_->hide();
+    //pixmapWidget_->show();
+    //delete widget;
+    //delete scene;
+    pixmapWidget_->setPixmap(contentPixmap_);
   }
   else
   {
     contentWidget_->setParent(this);
     delete contentPixmap_;
     contentPixmap_ = 0;
+    pixmapWidget_->setPixmap(0);
   }
 
   update();

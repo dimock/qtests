@@ -6,6 +6,7 @@ class QMouseEvent;
 class QVBoxLayout;
 class QResizeEvent;
 class QPushButton;
+class PixmapWidget;
 
 class QFoldingContainer : public QWidget
 {
@@ -15,8 +16,6 @@ public:
 
   QFoldingContainer(QWidget * parent = 0);
   ~QFoldingContainer();
-
-  void paintEvent(QPaintEvent *);
 
   void enableAnimation(bool enable);
   void setAnimationDuration(int ms);
@@ -38,7 +37,7 @@ private:
 
   QVBoxLayout * mainLayout_, * captionLayout_, * widgetLayout_, * pixmapLayout_;
   QWidget * contentWidget_;
-  QWidget * pixmapWidget_;
+  PixmapWidget * pixmapWidget_;
   QPushButton * collapseButton_;
 
   int height_;
