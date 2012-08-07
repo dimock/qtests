@@ -5,6 +5,7 @@
 class QMouseEvent;
 class QVBoxLayout;
 class QResizeEvent;
+class QPushButton;
 
 class QFoldingContainer : public QWidget
 {
@@ -15,6 +16,8 @@ public:
   QFoldingContainer(QWidget * parent = 0);
   ~QFoldingContainer();
 
+  void paintEvent(QPaintEvent *);
+
   void enableAnimation(bool enable);
   void setAnimationDuration(int ms);
 
@@ -24,14 +27,21 @@ public slots:
 
     void collapse();
     void expand();
-    void onExpanded(bool expanded);
+    void onCollapsed(bool collapsed);
 
 private:
 
   void killContent();
 
+  QSize sizeHint() const;
+
 private:
 
-  QVBoxLayout * mainLayout_, * captionLayout_, * contentLayout_;
+  QVBoxLayout * mainLayout_, * captionLayout_, * contentPanelLayout_, * contentWidgetLayout_;
   QWidget * contentWidget_;
+  QWidget * contentPanel_;
+  QPushButton * collapseButton_;
+
+  int height_;
+  bool collapsed_;
 };

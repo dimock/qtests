@@ -75,6 +75,9 @@ QSize TheWidget::sizeHint() const
     else
       rcAll |= rc;
   }
+  if ( rcAll.width() < 1 || rcAll.height() < 1 )
+    return QSize(200, 200);
+
   return QSize( rcAll.right()+1, rcAll.bottom()+1 );
 }
 

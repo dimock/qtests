@@ -1,2 +1,2 @@
 qmake -project
-qmake -tp vc foldingwidget.pro
+qmake -tp vc foldingcontainer.pro
