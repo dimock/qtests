@@ -8,7 +8,7 @@ int main(int argn, char * argv[])
   QApplication qapp(argn, argv);
   QFoldingContainer * w = new QFoldingContainer;
 
-  if ( 0 )
+  if ( 1 )
   {
     QListWidget * lw = new QListWidget;
 

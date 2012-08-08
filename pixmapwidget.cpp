@@ -52,6 +52,11 @@ void PixmapWidget::startAnimation(int direction, int percent)
   direction_ = direction;
   percent_ = percent;
 
+  if ( timerId_ != 0 )
+    killTimer(timerId_);
+
+  timerId_ = 0;
+
   if ( direction_ != 0 )
     timerId_ = startTimer(durationMs_/steps_);
 }
@@ -59,7 +64,7 @@ void PixmapWidget::startAnimation(int direction, int percent)
 void PixmapWidget::stopAnimation()
 {
   killTimer(timerId_);
-
+  timerId_ = 0;
   emit stopAnimationSignal();
 }
 
