@@ -10,8 +10,7 @@
 
 QFoldingContainer::QFoldingContainer(QWidget * parent /* = 0*/) :
   QWidget(parent), contentWidget_(0), captionLayout_(0),
-  widgetLayout_(0), pixmapLayout_(0), pixmapWidget_(0), height_(20), collapsed_(false),
-  contentPixmap_(0)
+  widgetLayout_(0), pixmapLayout_(0), pixmapWidget_(0)
 {
   setAttribute(Qt::WA_DeleteOnClose);
 
@@ -19,6 +18,7 @@ QFoldingContainer::QFoldingContainer(QWidget * parent /* = 0*/) :
   QLabel * theLabel = new QLabel(tr("Test Widget"), this);
 
   captionLayout_ = new QVBoxLayout;
+  captionLayout_->setContentsMargins(0,0,0,0);
   QHBoxLayout * captionHlayout = new QHBoxLayout;
   captionLayout_->addLayout(captionHlayout);
   captionHlayout->addWidget(theLabel, 1, Qt::AlignLeft);
@@ -30,11 +30,19 @@ QFoldingContainer::QFoldingContainer(QWidget * parent /* = 0*/) :
 
   // create main layout for both content and caption
   mainLayout_ = new QVBoxLayout;
+  mainLayout_->setContentsMargins(0,0,0,0);
   mainLayout_->addLayout(captionLayout_);
-  
+
+  // create widget for pixmap content representation
+  pixmapLayout_ = new QVBoxLayout;
+  pixmapLayout_->setContentsMargins(0,0,0,0);
+  pixmapWidget_ = new PixmapWidget(this);
+  pixmapLayout_->addWidget(pixmapWidget_, 1);
+
+  connect(pixmapWidget_, SIGNAL(stopAnimationSignal()), this, SLOT(onStopAnimation()));
+ 
   setLayout(mainLayout_);
   
-  //setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
   adjustSize();
 }
 
@@ -45,19 +53,14 @@ QFoldingContainer::~QFoldingContainer()
 
 void QFoldingContainer::killContent()
 {
-  if ( contentWidget_ )
-  {
-    delete widgetLayout_;
-    delete pixmapLayout_;
-    delete contentWidget_;
-    delete pixmapWidget_;
-  }
+  if ( pixmapLayout_ )
+    mainLayout_->removeItem(pixmapLayout_);
+
+  delete widgetLayout_;
+  delete contentWidget_;
 
   widgetLayout_ = 0;
-  pixmapLayout_ = 0;
   contentWidget_ = 0;
-  pixmapWidget_ = 0;
-  contentPixmap_ = 0;
 }
 
 void QFoldingContainer::enableAnimation(bool enable)
@@ -66,6 +69,14 @@ void QFoldingContainer::enableAnimation(bool enable)
 
 void QFoldingContainer::setAnimationDuration(int ms)
 {
+  if ( pixmapWidget_ )
+    pixmapWidget_->setAnimationDuration(ms);
+}
+
+void QFoldingContainer::setAnimationStepsNum(int num)
+{
+  if ( pixmapWidget_ )
+    pixmapWidget_->setAnimationStepsNum(num);
 }
 
 void QFoldingContainer::setContent(QWidget * content)
@@ -78,87 +89,66 @@ void QFoldingContainer::setContent(QWidget * content)
   // store content widget
   contentWidget_ = content;
 
-  /** firstly create layout for widget
-   */
+  // set content panel as content widget parent
+  contentWidget_->setParent(this);
 
   // create layout for content panel
   widgetLayout_ = new QVBoxLayout;
   mainLayout_->addLayout(widgetLayout_);
   widgetLayout_->setContentsMargins(0,0,0,0);
   widgetLayout_->addWidget(contentWidget_, 1);
-  
-  // create widget for pixmap content representation
-  pixmapLayout_ = new QVBoxLayout;
-  pixmapLayout_->setContentsMargins(0,0,0,0);
-  pixmapWidget_ = new PixmapWidget(this);
+
+  // add pixmap layout
   mainLayout_->addLayout(pixmapLayout_);
-  pixmapLayout_->addWidget(pixmapWidget_, 1);
 
-  // set content panel as content widget parent
-  contentWidget_->setParent(this);
+  updateContent(false);
 
-  updateContent();
-
-  //setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
   adjustSize();
 }
 
 void QFoldingContainer::collapse()
 {
-  collapsed_ = true;
   collapseButton_->setText(tr("+"));
-  updateContent();
+  updateContent(true);
 }
 
 void QFoldingContainer::expand()
 {
-  collapsed_ = false;
   collapseButton_->setText(tr("-"));
-  updateContent();
+  updateContent(true);
 }
 
-void QFoldingContainer::updateContent()
+void QFoldingContainer::updateContent(bool start)
 {
   if ( !contentWidget_ )
     return;
 
-  pixmapWidget_->setVisible(collapsed_);
-  contentWidget_->setVisible(!collapsed_);
-
-  if ( collapsed_ )
+  if ( isCollapsed() )
   {
-    QSize sz = contentWidget_->size();
-    contentPixmap_ = new QPixmap(sz);
-    contentWidget_->show();
-    contentPixmap_->grabWidget(contentWidget_);
-    contentWidget_->hide();
-    //QPainter painter(contentPixmap_);
-    //painter.fillRect(0, 0, sz.width(), sz.height(), Qt::black);
+    pixmapWidget_->setPixmap(QPixmap::grabWidget(contentWidget_));
+    pixmapWidget_->startAnimation(start ? -1 : 0, start ? 100 : 0);
+  }
+  else
+    pixmapWidget_->startAnimation(start ? +1 : 0, start ? 0 : 100);
 
-    //QGraphicsScene * scene = new QGraphicsScene();
-    ////contentWidget_->setParent(0);
-    //QGraphicsProxyWidget * widget = scene->addWidget(contentWidget_);
-    //contentWidget_->repaint();
-    //contentWidget_->show();
-    //scene->render(&painter, QRectF(0, 0, sz.width(), sz.height()), QRect(0, 0, sz.width(), sz.height()), Qt::KeepAspectRatio);
-    //scene->removeItem(widget);
-    //widget->setWidget(0);
-    //contentWidget_->hide();
-    //pixmapWidget_->show();
-    //delete widget;
-    //delete scene;
-    pixmapWidget_->setPixmap(contentPixmap_);
+  if ( !start )
+  {
+    pixmapWidget_->setVisible(isCollapsed());
+    contentWidget_->setVisible(!isCollapsed());
   }
   else
   {
-    contentWidget_->setParent(this);
-    delete contentPixmap_;
-    contentPixmap_ = 0;
-    pixmapWidget_->setPixmap(0);
+    pixmapWidget_->setVisible(true);
+    contentWidget_->setVisible(false);
   }
 
   update();
-//  updateGeometry();
+}
+
+void QFoldingContainer::onStopAnimation()
+{
+  pixmapWidget_->setVisible(isCollapsed());
+  contentWidget_->setVisible(!isCollapsed());
 }
 
 void QFoldingContainer::onCollapsed(bool collapsed)
@@ -167,4 +157,9 @@ void QFoldingContainer::onCollapsed(bool collapsed)
     collapse();
   else
     expand();
+}
+
+bool QFoldingContainer::isCollapsed() const
+{
+  return collapseButton_ && collapseButton_->isChecked();
 }

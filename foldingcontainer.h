@@ -19,8 +19,9 @@ public:
 
   void enableAnimation(bool enable);
   void setAnimationDuration(int ms);
-
+  void setAnimationStepsNum(int);
   void setContent(QWidget * content);
+  bool isCollapsed() const;
 
 public slots:
 
@@ -31,7 +32,11 @@ public slots:
 private:
 
   void killContent();
-  void updateContent();
+  void updateContent(bool start /* starts animation from 100% content visibility */ );
+
+private slots:
+
+  void onStopAnimation();
 
 private:
 
@@ -39,8 +44,4 @@ private:
   QWidget * contentWidget_;
   PixmapWidget * pixmapWidget_;
   QPushButton * collapseButton_;
-
-  int height_;
-  bool collapsed_;
-  QPixmap * contentPixmap_;
 };
