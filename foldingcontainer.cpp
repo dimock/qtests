@@ -9,29 +9,14 @@
 #include <QGraphicsProxyWidget>
 
 QFoldingContainer::QFoldingContainer(QWidget * parent /* = 0*/) :
-  QWidget(parent), contentWidget_(0), captionLayout_(0),
-  widgetLayout_(0), pixmapLayout_(0), pixmapWidget_(0)
+  QWidget(parent), contentWidget_(0),
+  widgetLayout_(0), pixmapLayout_(0), pixmapWidget_(0),
+  expanded_(true)
 {
   setAttribute(Qt::WA_DeleteOnClose);
 
-  // create widget's caption
-  QLabel * theLabel = new QLabel(tr("Test Widget"), this);
-
-  captionLayout_ = new QVBoxLayout;
-  //captionLayout_->setContentsMargins(0,0,0,0);
-  QHBoxLayout * captionHlayout = new QHBoxLayout;
-  captionLayout_->addLayout(captionHlayout);
-  captionHlayout->addWidget(theLabel, 1, Qt::AlignLeft);
-
-  collapseButton_ = new QPushButton(tr("-"), this);
-  collapseButton_->setCheckable(true);
-  captionHlayout->addWidget(collapseButton_);
-  connect(collapseButton_, SIGNAL(toggled(bool)), this, SLOT(onCollapsed(bool)));
-
   // create main layout for both content and caption
   mainLayout_ = new QVBoxLayout;
-  //mainLayout_->setContentsMargins(0,0,0,0);
-  mainLayout_->addLayout(captionLayout_);
 
   // create widget for pixmap content representation
   pixmapLayout_ = new QVBoxLayout;
@@ -108,13 +93,13 @@ void QFoldingContainer::setContent(QWidget * content)
 
 void QFoldingContainer::collapse()
 {
-  collapseButton_->setText(tr("+"));
+  expanded_ = false;
   updateContent(true);
 }
 
 void QFoldingContainer::expand()
 {
-  collapseButton_->setText(tr("-"));
+  expanded_ = true;
   updateContent(true);
 }
 
@@ -123,7 +108,7 @@ void QFoldingContainer::updateContent(bool start)
   if ( !contentWidget_ )
     return;
 
-  if ( isCollapsed() )
+  if ( !expanded_ )
   {
     pixmapWidget_->setPixmap(QPixmap::grabWidget(contentWidget_));
     pixmapWidget_->startAnimation(start ? -1 : 0, start ? 100 : 0);
@@ -133,8 +118,8 @@ void QFoldingContainer::updateContent(bool start)
 
   if ( !start )
   {
-    pixmapWidget_->setVisible(isCollapsed());
-    contentWidget_->setVisible(!isCollapsed());
+    pixmapWidget_->setVisible(!expanded_);
+    contentWidget_->setVisible(expanded_);
   }
   else
   {
@@ -147,19 +132,15 @@ void QFoldingContainer::updateContent(bool start)
 
 void QFoldingContainer::onStopAnimation()
 {
-  pixmapWidget_->setVisible(isCollapsed());
-  contentWidget_->setVisible(!isCollapsed());
+  pixmapWidget_->setVisible(!expanded_);
+  contentWidget_->setVisible(expanded_);
 }
 
-void QFoldingContainer::onCollapsed(bool collapsed)
+void QFoldingContainer::setExpanded(bool expanded)
 {
-  if ( collapsed )
+  expanded_ = expanded;
+  if ( !expanded_ )
     collapse();
   else
     expand();
-}
-
-bool QFoldingContainer::isCollapsed() const
-{
-  return collapseButton_ && collapseButton_->isChecked();
 }

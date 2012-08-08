@@ -16,7 +16,7 @@ public:
   void paintEvent(QPaintEvent *);
   void timerEvent(QTimerEvent *);
 
-  void setPixmap(QPixmap & );
+  void setPixmap(const QPixmap & );
   void setAnimationDuration(int ms);
   void setAnimationStepsNum(int);
 

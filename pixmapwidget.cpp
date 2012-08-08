@@ -17,7 +17,7 @@ PixmapWidget::~PixmapWidget()
 {
 }
 
-void PixmapWidget::setPixmap(QPixmap & pixmap)
+void PixmapWidget::setPixmap(const QPixmap & pixmap)
 {
   pixmap_ = pixmap;
 }

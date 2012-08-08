@@ -21,18 +21,17 @@ public:
   void setAnimationDuration(int ms);
   void setAnimationStepsNum(int);
   void setContent(QWidget * content);
-  bool isCollapsed() const;
 
 public slots:
 
     void collapse();
     void expand();
-    void onCollapsed(bool collapsed);
+    void setExpanded(bool);
 
 private:
 
   void killContent();
-  void updateContent(bool start /* starts animation from 100% content visibility */ );
+  void updateContent(bool start /* if TRUE - starts animation from 100% content visibility */ );
 
 private slots:
 
@@ -40,8 +39,8 @@ private slots:
 
 private:
 
-  QVBoxLayout * mainLayout_, * captionLayout_, * widgetLayout_, * pixmapLayout_;
+  QVBoxLayout * mainLayout_, * widgetLayout_, * pixmapLayout_;
   QWidget * contentWidget_;
   PixmapWidget * pixmapWidget_;
-  QPushButton * collapseButton_;
+  bool expanded_;
 };
