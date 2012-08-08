@@ -18,7 +18,7 @@ QFoldingContainer::QFoldingContainer(QWidget * parent /* = 0*/) :
   QLabel * theLabel = new QLabel(tr("Test Widget"), this);
 
   captionLayout_ = new QVBoxLayout;
-  captionLayout_->setContentsMargins(0,0,0,0);
+  //captionLayout_->setContentsMargins(0,0,0,0);
   QHBoxLayout * captionHlayout = new QHBoxLayout;
   captionLayout_->addLayout(captionHlayout);
   captionHlayout->addWidget(theLabel, 1, Qt::AlignLeft);
@@ -30,7 +30,7 @@ QFoldingContainer::QFoldingContainer(QWidget * parent /* = 0*/) :
 
   // create main layout for both content and caption
   mainLayout_ = new QVBoxLayout;
-  mainLayout_->setContentsMargins(0,0,0,0);
+  //mainLayout_->setContentsMargins(0,0,0,0);
   mainLayout_->addLayout(captionLayout_);
 
   // create widget for pixmap content representation
