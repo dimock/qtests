@@ -6,6 +6,7 @@ class QImage;
 class QVBoxLayout;
 class QFoldingContainer;
 class QPushButton;
+class TheCaption;
 
 class ThePanel : public QWidget
 {
@@ -16,6 +17,7 @@ public:
   ThePanel(QWidget * parent);
 
   void setCaption(const QString &);
+  QFoldingContainer * getFoldingContainer();
 
 private slots:
 
@@ -23,8 +25,7 @@ private slots:
 
 private:
 
-  QString caption_;
-  QImage * stateImages_[2];
+  TheCaption * caption_;
   QVBoxLayout * mainLayout_, * captionLayout_, * foldingLayout_;
   QFoldingContainer * foldingContainer_;
   QPushButton * collapseButton_;

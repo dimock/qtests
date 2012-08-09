@@ -52,6 +52,11 @@ void QFoldingContainer::enableAnimation(bool enable)
 {
 }
 
+bool QFoldingContainer::isExpanded() const
+{
+  return expanded_;
+}
+
 void QFoldingContainer::setAnimationDuration(int ms)
 {
   if ( pixmapWidget_ )

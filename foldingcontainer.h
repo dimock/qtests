@@ -22,6 +22,8 @@ public:
   void setAnimationStepsNum(int);
   void setContent(QWidget * content);
 
+  bool isExpanded() const;
+
 public slots:
 
     void collapse();

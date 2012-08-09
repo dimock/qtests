@@ -1,5 +1,6 @@
 #include "thepanel.h"
 #include "foldingcontainer.h"
+#include "captionwidget.h"
 
 #include <QVBoxLayout>
 #include <QLabel>
@@ -10,12 +11,9 @@
 #include "thewidget.h"
 
 ThePanel::ThePanel(QWidget * parent) :
-  QWidget(parent)
+  QWidget(parent), caption_(0)
 {
   setAttribute(Qt::WA_DeleteOnClose);
-
-  stateImages_[0] = new QImage(tr(":/images/collapsed.png"));
-  stateImages_[1] = new QImage(tr(":/images/expanded.png"));
 
   mainLayout_ = new QVBoxLayout;
   captionLayout_ = new QVBoxLayout;
@@ -24,8 +22,8 @@ ThePanel::ThePanel(QWidget * parent) :
   mainLayout_->addLayout(captionLayout_);
   mainLayout_->addLayout(foldingLayout_);
 
-  QLabel * text = new QLabel(tr("expanded"), this);
-  captionLayout_->addWidget(text);
+  caption_ = new TheCaption(this);
+  captionLayout_->addWidget(caption_);
   collapseButton_ = new QPushButton(tr("-"), this);
   collapseButton_->setCheckable(true);
   captionLayout_->addWidget(collapseButton_);
@@ -63,4 +61,10 @@ ThePanel::ThePanel(QWidget * parent) :
 void ThePanel::onCollapseExpand(bool)
 {
   foldingContainer_->setExpanded( !collapseButton_->isChecked() );
+  update();
+}
+
+QFoldingContainer * ThePanel::getFoldingContainer()
+{
+  return foldingContainer_;
 }
