@@ -11,7 +11,7 @@
 #include "thewidget.h"
 
 ThePanel::ThePanel(QWidget * parent) :
-  QWidget(parent), caption_(0)
+  QWidget(parent)
 {
   setAttribute(Qt::WA_DeleteOnClose);
 

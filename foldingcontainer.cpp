@@ -87,6 +87,7 @@ void QFoldingContainer::setContent(QWidget * content)
   mainLayout_->addLayout(widgetLayout_);
   widgetLayout_->setContentsMargins(0,0,0,0);
   widgetLayout_->addWidget(contentWidget_, 1);
+  mainLayout_->setContentsMargins(0,0,0,0);
 
   // add pixmap layout
   mainLayout_->addLayout(pixmapLayout_);

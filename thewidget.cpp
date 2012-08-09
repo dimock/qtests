@@ -4,7 +4,7 @@
 #include <QApplication>
 
 TheWidget::TheWidget(QWidget * parent) :
-QWidget(parent)
+  QWidget(parent)
 {
   setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
   setAttribute(Qt::WA_DeleteOnClose);
