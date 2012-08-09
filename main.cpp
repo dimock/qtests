@@ -7,6 +7,7 @@
 int main(int argn, char * argv[])
 {
   QApplication qapp(argn, argv);
+
   ThePanel * p = new ThePanel(0);
 
   p->show();

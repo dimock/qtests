@@ -2,5 +2,7 @@
 <qresource>
 	<file>images/collapsed.png</file>
 	<file>images/expanded.png</file>
+    <file>images/close_normal.png</file>
+    <file>images/close_active.png</file>
 </qresource>
 </RCC>

@@ -9,13 +9,19 @@
 #include <QLinearGradient>
 #include <QPushButton>
 #include <QMouseEvent>
+#include <QStyleOption>
 
 TheCaption::TheCaption(QWidget * parent) :
   QWidget(parent)
 {
   icon_ = new TheIcon(this);
   captionLabel_ = new QLabel( tr("Expanded"), this );
-  closeButton_ = new QPushButton( QIcon(), tr(""), this );
+
+  QIcon icon;
+  icon.addPixmap( QPixmap( tr(":/images/close_normal.png") ), QIcon::Normal );
+  icon.addPixmap( QPixmap( tr(":/images/close_active.png") ), QIcon::Active );
+  closeButton_ = new QPushButton( icon, tr(""), this );
+  closeButton_->setFlat(true);
 
   mainLayout_ = new QHBoxLayout;
   mainLayout_->addWidget(icon_, 0);
@@ -24,6 +30,9 @@ TheCaption::TheCaption(QWidget * parent) :
 
   connect(closeButton_, SIGNAL(clicked()), parent, SLOT(close()));
   connect(this, SIGNAL(expandButton()), parent, SLOT(onCollapseExpand()));
+
+  // doesn't work
+  //captionLabel_->setStyleSheet( QObject::tr(" hover { text-decoration: underline } ") );
 
   setLayout(mainLayout_);
   adjustSize();
@@ -44,19 +53,15 @@ void TheCaption::paintEvent(QPaintEvent *)
 
   captionLabel_->setText(container->isExpanded() ? tr("Expanded") : tr("Collapsed") );
 
-  QPainter painter(this);
+  if ( container->isExpanded() )
+    setStyleSheet( tr("TheCaption { background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:1 rgba(100, 100, 100, 255)); border-radius: 5px; }") );
+  else
+    setStyleSheet( tr("TheCaption { background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(180, 180, 180, 255), stop:1 rgba(70, 70, 70, 255)); border-radius: 5px; }") );
 
-  Qt::GlobalColor color = container->isExpanded() ? Qt::red : Qt::blue;
-
-  QSize sz = size();
-  QPen pen(Qt::NoPen);
-  painter.setPen(pen);
-  QLinearGradient grad(QPointF(0,0), QPointF(0,sz.height()));
-  grad.setColorAt(0, Qt::white);
-  grad.setColorAt(1, color);
-  QBrush brush(grad);
-  painter.setBrush(brush);
-  painter.drawRoundedRect( QRectF(0,0,sz.width(),sz.height()), 5, 5, Qt::AbsoluteSize );
+  QStyleOption opt;
+  opt.init(this);
+  QPainter p(this);
+  style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
 void TheCaption::enterEvent(QEvent * e)
