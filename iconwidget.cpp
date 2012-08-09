@@ -36,3 +36,9 @@ QSize TheIcon::sizeHint() const
   QSize sz = icons_[1]->size();
   return sz;
 }
+
+QSize TheIcon::minimumSizeHint() const
+{
+  QSize sz = icons_[1]->size();
+  return sz;
+}

@@ -16,6 +16,7 @@ public:
   void paintEvent(QPaintEvent *);
 
   QSize sizeHint() const;
+  QSize minimumSizeHint() const;
 
 private:
 

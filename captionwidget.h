@@ -23,4 +23,5 @@ private:
   QHBoxLayout * mainLayout_;
   TheIcon * icon_;
   QLabel * captionLabel_;
+  QPushButton * closeButton_;
 };
