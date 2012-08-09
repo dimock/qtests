@@ -21,12 +21,11 @@ public:
 
 private slots:
 
-  void onCollapseExpand(bool);
+  void onCollapseExpand();
 
 private:
 
   TheCaption * caption_;
   QVBoxLayout * mainLayout_, * captionLayout_, * foldingLayout_;
   QFoldingContainer * foldingContainer_;
-  QPushButton * collapseButton_;
 };

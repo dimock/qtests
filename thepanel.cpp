@@ -24,11 +24,6 @@ ThePanel::ThePanel(QWidget * parent) :
 
   caption_ = new TheCaption(this);
   captionLayout_->addWidget(caption_);
-  collapseButton_ = new QPushButton(tr("-"), this);
-  collapseButton_->setCheckable(true);
-  captionLayout_->addWidget(collapseButton_);
-
-  connect( collapseButton_, SIGNAL(toggled(bool)), this, SLOT(onCollapseExpand(bool)) );
 
   foldingContainer_ = new QFoldingContainer(this);
   foldingLayout_->addWidget(foldingContainer_);
@@ -58,9 +53,9 @@ ThePanel::ThePanel(QWidget * parent) :
   setLayout(mainLayout_);
 }
 
-void ThePanel::onCollapseExpand(bool)
+void ThePanel::onCollapseExpand()
 {
-  foldingContainer_->setExpanded( !collapseButton_->isChecked() );
+  foldingContainer_->setExpanded( !foldingContainer_->isExpanded() );
   update();
 }
 

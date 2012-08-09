@@ -17,6 +17,15 @@ public:
   TheCaption(QWidget * parent);
 
   void paintEvent(QPaintEvent *);
+  void enterEvent(QEvent *);
+  void leaveEvent(QEvent *);
+  void mousePressEvent(QMouseEvent *);
+
+private:
+
+signals:
+
+  void expandButton();
 
 private:
 

@@ -8,23 +8,22 @@
 #include <QHBoxLayout>
 #include <QLinearGradient>
 #include <QPushButton>
+#include <QMouseEvent>
 
 TheCaption::TheCaption(QWidget * parent) :
   QWidget(parent)
 {
   icon_ = new TheIcon(this);
-  captionLabel_ = new QLabel( tr("expanded"), this );
+  captionLabel_ = new QLabel( tr("Expanded"), this );
   closeButton_ = new QPushButton( QIcon(), tr(""), this );
 
   mainLayout_ = new QHBoxLayout;
   mainLayout_->addWidget(icon_, 0);
   mainLayout_->addWidget(captionLabel_, 1, Qt::AlignVCenter|Qt::AlignRight);
   mainLayout_->addWidget(closeButton_, 0);
-  //mainLayout_->setSizeConstraint(QLayout::SetMinimumSize);
-
-  //setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
   connect(closeButton_, SIGNAL(clicked()), parent, SLOT(close()));
+  connect(this, SIGNAL(expandButton()), parent, SLOT(onCollapseExpand()));
 
   setLayout(mainLayout_);
   adjustSize();
@@ -58,4 +57,25 @@ void TheCaption::paintEvent(QPaintEvent *)
   QBrush brush(grad);
   painter.setBrush(brush);
   painter.drawRoundedRect( QRectF(0,0,sz.width(),sz.height()), 5, 5, Qt::AbsoluteSize );
+}
+
+void TheCaption::enterEvent(QEvent * e)
+{
+  QFont font = captionLabel_->font();
+  font.setUnderline(true);
+  captionLabel_->setFont(font);
+  update();
+}
+
+void TheCaption::leaveEvent(QEvent * e)
+{
+  QFont font = captionLabel_->font();
+  font.setUnderline(false);
+  captionLabel_->setFont(font);
+  update();
+}
+
+void TheCaption::mousePressEvent(QMouseEvent *)
+{
+  emit expandButton();
 }
