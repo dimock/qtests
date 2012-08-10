@@ -14,8 +14,10 @@
 TheCaption::TheCaption(QWidget * parent) :
   QWidget(parent)
 {
+  setAttribute(Qt::WA_DeleteOnClose);
+
   icon_ = new TheIcon(this);
-  captionLabel_ = new QLabel( tr("Expanded"), this );
+  captionLabel_ = new QLabel( tr(""), this );
 
   QIcon icon;
   icon.addPixmap( QPixmap( tr(":/images/close_normal.png") ), QIcon::Normal );

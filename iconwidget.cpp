@@ -7,6 +7,8 @@
 TheIcon::TheIcon(QWidget * parent) :
   QWidget(parent)
 {
+  setAttribute(Qt::WA_DeleteOnClose);
+
   icons_[0] = new QImage( QString(":/images/collapsed.png"));
   icons_[1] = new QImage( QString(":/images/expanded.png"));
 }

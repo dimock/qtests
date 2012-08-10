@@ -11,6 +11,7 @@
 void createMainWindow()
 {
   QWidget * mainWdg = new QWidget(0);
+  mainWdg->setAttribute(Qt::WA_DeleteOnClose);
 
   QGridLayout * mainLayout = new QGridLayout(mainWdg);
   mainWdg->setLayout(mainLayout);
