@@ -64,7 +64,7 @@ void TheCaption::paintEvent(QPaintEvent *)
   style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
-void TheCaption::enterEvent(QEvent * e)
+void TheCaption::enterEvent(QEvent * )
 {
   QFont font = captionLabel_->font();
   font.setUnderline(true);
@@ -72,7 +72,7 @@ void TheCaption::enterEvent(QEvent * e)
   update();
 }
 
-void TheCaption::leaveEvent(QEvent * e)
+void TheCaption::leaveEvent(QEvent * )
 {
   QFont font = captionLabel_->font();
   font.setUnderline(false);

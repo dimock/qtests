@@ -44,7 +44,7 @@ void TheWidget::mousePressEvent(QMouseEvent * e)
   }
 }
 
-void TheWidget::paintEvent(QPaintEvent * e)
+void TheWidget::paintEvent(QPaintEvent * )
 {
   QPainter painter(this);
 

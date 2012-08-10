@@ -37,6 +37,7 @@ signals:
 private:
 
   void stopAnimation();
+  void updateContentSize();
  
   int durationMs_;
   int percent_;

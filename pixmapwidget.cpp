@@ -22,7 +22,7 @@ void PixmapWidget::setPixmap(const QPixmap & pixmap)
   pixmap_ = pixmap;
 }
 
-void PixmapWidget::paintEvent(QPaintEvent * e)
+void PixmapWidget::paintEvent(QPaintEvent * )
 {
   if ( !pixmap_ )
     return;
@@ -59,6 +59,8 @@ void PixmapWidget::startAnimation(int direction, int percent)
 
   if ( direction_ != 0 )
     timerId_ = startTimer(durationMs_/steps_);
+
+  updateContentSize();
 }
 
 void PixmapWidget::stopAnimation()
@@ -68,7 +70,7 @@ void PixmapWidget::stopAnimation()
   emit stopAnimationSignal();
 }
 
-void PixmapWidget::timerEvent(QTimerEvent * event)
+void PixmapWidget::timerEvent(QTimerEvent * )
 {
   percent_ += direction_ * 100 / steps_;
   if ( percent_ < 0 )
@@ -82,6 +84,11 @@ void PixmapWidget::timerEvent(QTimerEvent * event)
     stopAnimation();
   }
 
+  updateContentSize();
+}
+
+void PixmapWidget::updateContentSize()
+{
   QImage image = pixmap_.toImage();
   QSize sz = image.size();
 

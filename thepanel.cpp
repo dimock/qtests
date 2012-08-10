@@ -28,28 +28,6 @@ ThePanel::ThePanel(QWidget * parent) :
   foldingContainer_ = new QFoldingContainer(this);
   foldingLayout_->addWidget(foldingContainer_);
 
-  if ( 1 )
-  {
-    QListWidget * lw = new QListWidget;
-
-    for (int i = 0; i < 20; ++i)
-    {
-      QString qstr;
-      qstr.sprintf("Item number %d", i);
-      lw->addItem(qstr);
-    }
-
-    foldingContainer_->setContent(lw);
-  }
-  else
-  {
-    TheWidget * tw = new TheWidget;
-    foldingContainer_->setContent(tw);
-  }
-
-  foldingContainer_->setAnimationDuration(300);
-  foldingContainer_->setAnimationStepsNum(20);
-
   setLayout(mainLayout_);
 }
 

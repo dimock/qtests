@@ -11,7 +11,7 @@
 QFoldingContainer::QFoldingContainer(QWidget * parent /* = 0*/) :
   QWidget(parent), contentWidget_(0),
   widgetLayout_(0), pixmapLayout_(0), pixmapWidget_(0),
-  expanded_(true)
+  expanded_(true), animationEnabled_(true)
 {
   setAttribute(Qt::WA_DeleteOnClose);
 
@@ -50,6 +50,7 @@ void QFoldingContainer::killContent()
 
 void QFoldingContainer::enableAnimation(bool enable)
 {
+  animationEnabled_ = enable;
 }
 
 bool QFoldingContainer::isExpanded() const
@@ -100,13 +101,13 @@ void QFoldingContainer::setContent(QWidget * content)
 void QFoldingContainer::collapse()
 {
   expanded_ = false;
-  updateContent(true);
+  updateContent(animationEnabled_);
 }
 
 void QFoldingContainer::expand()
 {
   expanded_ = true;
-  updateContent(true);
+  updateContent(animationEnabled_);
 }
 
 void QFoldingContainer::updateContent(bool start)

@@ -44,5 +44,5 @@ private:
   QVBoxLayout * mainLayout_, * widgetLayout_, * pixmapLayout_;
   QWidget * contentWidget_;
   PixmapWidget * pixmapWidget_;
-  bool expanded_;
+  bool expanded_, animationEnabled_;
 };
