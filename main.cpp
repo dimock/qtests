@@ -15,19 +15,10 @@ void createMainWindow()
   QGridLayout * mainLayout = new QGridLayout(mainWdg);
   mainWdg->setLayout(mainLayout);
 
-  //QVBoxLayout * leftLayout = new QVBoxLayout;
-  //QVBoxLayout * centerLayout = new QVBoxLayout;
-  //QVBoxLayout * rightLayout = new QVBoxLayout;
-
-  //mainLayout->addLayout(leftLayout, 1, 0);
-  //mainLayout->addLayout(centerLayout, 1, 1);
-  //mainLayout->addLayout(rightLayout, 1, 2);
-
   // filling left
   {
     QScrollArea * scrollArea = new QScrollArea(mainWdg);
     QWidget * leftWidget = new QWidget(scrollArea);
-    //leftLayout->addWidget(scrollArea);
     mainLayout->addWidget(scrollArea, 1, 0);
     scrollArea->setWidget(leftWidget);
     scrollArea->setWidgetResizable(true);
@@ -73,14 +64,12 @@ void createMainWindow()
 
     leftWidgetLayout->addStretch(1);
 
-    //leftWidget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     leftWidget->adjustSize();
   }
 
   // filling center
   {
     QWidget * centerWidget = new QWidget(mainWdg);
-    //centerLayout->addWidget(centerWidget);
     mainLayout->addWidget(centerWidget, 1, 1);
 
     QVBoxLayout * centerWidgetLayout = new QVBoxLayout;
@@ -124,7 +113,6 @@ void createMainWindow()
 
     centerWidgetLayout->addStretch(1);
 
-    //centerWidget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     centerWidget->adjustSize();
   }
 
@@ -132,7 +120,6 @@ void createMainWindow()
   // filling right
   {
     QWidget * rightWidget = new QWidget(mainWdg);
-    //rightLayout->addWidget(rightWidget);
     mainLayout->addWidget(rightWidget, 1, 2);
 
     QVBoxLayout * rightWidgetLayout = new QVBoxLayout;
@@ -154,14 +141,13 @@ void createMainWindow()
       }
 
       qfc1->setContent(lw);
-      qfc1->setAnimationDuration(300);
-      qfc1->setAnimationStepsNum(20);
+      qfc1->setAnimationDuration(1000);
+      qfc1->setAnimationStepsNum(50);
       qfc1->enableAnimation(true);
     }
 
     rightWidgetLayout->addWidget(panel1);
 
-   // rightWidget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     rightWidget->adjustSize();
   }
 

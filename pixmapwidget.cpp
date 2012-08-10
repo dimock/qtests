@@ -45,6 +45,8 @@ void PixmapWidget::setAnimationStepsNum(int steps)
   steps_ = steps;
   if ( steps_ < 1 )
     steps_ = 1;
+  else if ( steps_ > 50 )
+    steps_ = 50;
 }
 
 void PixmapWidget::startAnimation(int direction, int percent)
@@ -106,9 +108,6 @@ void PixmapWidget::updateContentSize()
 
   update();
   updateGeometry();
-
-  //((QWidget*)parent())->updateGeometry();
-  //((QWidget*)(parent()->parent()))->updateGeometry();
 }
 
 QSize PixmapWidget::sizeHint() const
