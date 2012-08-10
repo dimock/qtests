@@ -20,6 +20,9 @@ public:
   void setAnimationDuration(int ms);
   void setAnimationStepsNum(int);
 
+  QSize sizeHint() const;
+  QSize minimumSizeHint() const;
+
   /**
     this method starts the animation in given direction:
       0 - don't perform animation, just show finial state

@@ -99,10 +99,25 @@ void PixmapWidget::updateContentSize()
   int h = sz.height() * percent_ / 100;
   int x = 0, y = sz.height() - h;
 
-  imageRect_ = QRectF(x, y, x+w, y+h);
+  imageRect_ = QRectF(x, y, w, h);
   destPt_ = QPointF(0, 0);
 
   resize(imageRect_.size().width(), imageRect_.size().height());
 
   update();
+  updateGeometry();
+
+  //((QWidget*)parent())->updateGeometry();
+  //((QWidget*)(parent()->parent()))->updateGeometry();
+}
+
+QSize PixmapWidget::sizeHint() const
+{
+  QSize sz(imageRect_.width(), imageRect_.height());
+  return sz;
+}
+
+QSize PixmapWidget::minimumSizeHint() const
+{
+  return sizeHint();
 }
