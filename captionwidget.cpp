@@ -36,29 +36,14 @@ TheCaption::TheCaption(QWidget * parent) :
   // doesn't work
   //captionLabel_->setStyleSheet( QObject::tr(" hover { text-decoration: underline } ") );
 
+  updateCaption();
+
   setLayout(mainLayout_);
   adjustSize();
 }
 
 void TheCaption::paintEvent(QPaintEvent *)
 {
-  if ( !parent() )
-    return;
-
-  ThePanel * panel = dynamic_cast<ThePanel*>(parent());
-  if ( !panel )
-    return;
-
-  QFoldingContainer * container = panel->getFoldingContainer();
-  if ( !container )
-    return;
-
-  captionLabel_->setText(container->isExpanded() ? tr("Expanded") : tr("Collapsed") );
-
-  if ( container->isExpanded() )
-    setStyleSheet( tr("TheCaption { background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:1 rgba(100, 100, 100, 255)); border-radius: 5px; }") );
-  else
-    setStyleSheet( tr("TheCaption { background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(180, 180, 180, 255), stop:1 rgba(70, 70, 70, 255)); border-radius: 5px; }") );
 
   QStyleOption opt;
   opt.init(this);
@@ -80,6 +65,27 @@ void TheCaption::leaveEvent(QEvent * )
   font.setUnderline(false);
   captionLabel_->setFont(font);
   update();
+}
+
+void TheCaption::updateCaption()
+{
+  if ( !parent() )
+    return;
+
+  ThePanel * panel = dynamic_cast<ThePanel*>(parent());
+  if ( !panel )
+    return;
+
+  QFoldingContainer * container = panel->getFoldingContainer();
+  if ( !container )
+    return;
+
+  captionLabel_->setText(container->isExpanded() ? tr("Expanded") : tr("Collapsed") );
+
+  if ( container->isExpanded() )
+    setStyleSheet( tr("TheCaption { background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:1 rgba(100, 100, 100, 255)); border-radius: 5px; }") );
+  else
+    setStyleSheet( tr("TheCaption { background-color: QLinearGradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(180, 180, 180, 255), stop:1 rgba(70, 70, 70, 255)); border-radius: 5px; }") );
 }
 
 void TheCaption::mousePressEvent(QMouseEvent *)

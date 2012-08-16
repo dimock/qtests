@@ -22,11 +22,11 @@ ThePanel::ThePanel(QWidget * parent) :
   mainLayout_->addLayout(captionLayout_);
   mainLayout_->addLayout(foldingLayout_);
 
-  caption_ = new TheCaption(this);
-  captionLayout_->addWidget(caption_);
-
   foldingContainer_ = new QFoldingContainer(this);
   foldingLayout_->addWidget(foldingContainer_);
+
+  caption_ = new TheCaption(this);
+  captionLayout_->addWidget(caption_);
 
   setLayout(mainLayout_);
 }
@@ -35,6 +35,8 @@ void ThePanel::onCollapseExpand()
 {
   foldingContainer_->setExpanded( !foldingContainer_->isExpanded() );
   update();
+  if ( caption_ )
+    caption_->updateCaption();
 }
 
 QFoldingContainer * ThePanel::getFoldingContainer()

@@ -20,6 +20,7 @@ public:
   void enterEvent(QEvent *);
   void leaveEvent(QEvent *);
   void mousePressEvent(QMouseEvent *);
+  void updateCaption();
 
 private:
 
